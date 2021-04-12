@@ -200,8 +200,8 @@ async function transformData(data, item) {
 
     async function connect1(){
     
-            let sequelize1 = new Sequelize(`mysql://root:Natasha$362436@localhost:3306/gkc_husky`);
-    // let sequelize1 = new Sequelize('mysql://digiprex:LDcF4K0lD0tSTJYwIUmi@digiprexapi.ctky9owxz1tq.ap-south-1.rds.amazonaws.com:3306/gkc_husky');
+            // let sequelize1 = new Sequelize(`mysql://root:Natasha$362436@localhost:3306/gkc_husky`);
+    let sequelize1 = new Sequelize('mysql://digiprex:LDcF4K0lD0tSTJYwIUmi@digiprexapi.ctky9owxz1tq.ap-south-1.rds.amazonaws.com:3306/gkc_husky_reports');
     try {
         await sequelize1.authenticate();
         console.log('Connection has been established successfully.');
