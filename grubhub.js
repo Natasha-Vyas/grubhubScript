@@ -23,7 +23,7 @@ var add = moment().add(7, 'd').format("YYYY-MM-DD");
         let config =
         {
             method: 'get',
-            url: `https://api-order-processing-gtm.grubhub.com/merchant/accounting/v1/${merchantUuid}/transactions?timeZone=America/Chicago&startDate=2021-03-12&endDate=2021-04-12`,
+            url: `https://api-order-processing-gtm.grubhub.com/merchant/accounting/v1/${merchantUuid}/transactions?timeZone=America/Chicago&startDate=${date}&endDate=${add}`,
             headers: {
                 'authority': 'api-order-processing-gtm.grubhub.com',
                 'sec-ch-ua': '"Google Chrome";v="89", "Chromium";v="89", ";Not A Brand";v="99"',
@@ -47,7 +47,7 @@ var add = moment().add(7, 'd').format("YYYY-MM-DD");
         // console.log(transId)
         run2(merchantUuid, token, transId, data, sequelize, id,sequelize1);
         }
-        // console.log("dattttttttttttttt",data)
+        // console.log("api1 response",data)
     } catch (error) {
         console.log(error)
     }
@@ -130,15 +130,12 @@ async function storeData(orders, id ,sequelize1) {
     }
 
 async function transformData(data, item) {
-        // console.log("orderrrrrr", data, "itemmmmmmmm", item);
+        // console.log("api1", data, "api2", item);
         order_details = [];
         let charges = item;
         let status = orderRecievedDate = orderReadyDate = orderConfirmedDate = orderOutForDeliveryDate = orderDeliveryDate = orderPreparationTime = "NULL";
         let modifiedOrderRecievedDate = modifiedOrderRecievedTime = modifiedOrderReadyDate = modifiedOrderReadyTime = modifiedOrderConfirmedDate = modifiedOrderConfirmedTime = modifiedOrderOutForDeliveryDate = modifiedOrderOutForDeliveryTime = modifiedOrderDeliveryDate = modifiedOrderDeliveryTime = "NULL";
         let note = "NULL";
-        // if (order.order_change_status_name) {
-        // let state = data.order_change_status_name;
-        // console.log("state", state)
 
         for (let i = 0; i <1; i++) {
             for (key in charges) {
@@ -156,10 +153,9 @@ async function transformData(data, item) {
                 item_quantity: data.order_details[i].quantity
             }
             order_details.push(item);
-            // console.log("itemmmmmmmm", item)
+            // console.log("item", item)
         }
-        // console.log("itemmmmmmmmmmmm", item)
-        // console.log("orderdetailsssssssssss", data.order_details,)
+        // console.log("orderdetails", data.order_details,)
         let orders = {
             item: order_details,
             // uuid: data.order_details[0].line_uuid,
@@ -191,12 +187,10 @@ async function transformData(data, item) {
         try {
             let branch_details = await sequelize.query('select s.token, b.id as mid, b.email, b.`password`, b.place_uuid, b.merchant_uuid, br.branch_name, br.location, p.`platform_name` from `branch_platform` as b join session as s on b.id=s.branch_platform_id JOIN `branch` as br ON  `b`.branch_id=br.id  JOIN platforms as p ON b.platform_id=p.id where b.platform_id="2" and b.merchant_uuid is not null', { type: QueryTypes.SELECT });
             for (let i = 0; i < branch_details.length; i++) {
-                let some = branch_details[i]
                 let merchantUuid = branch_details[i].merchant_uuid;
                 let token = branch_details[i].token;
                 let id = branch_details[i].mid;
-                // console.log("someeeeeeeeeeeeee", some)
-                // console.log("dataaaaaaaaa", merchantUuid, "tokennnnnnn",token, "ssssssssss",sequelize, "idddddddd", id, "details", branch_details)
+                // console.log("data", merchantUuid, "token",token, "seq",sequelize, "id", id, "details", branch_details)
                 let response = await getResponse(merchantUuid, token, sequelize, id,sequelize1)
             }
         } catch (error) {
@@ -219,7 +213,7 @@ async function transformData(data, item) {
     }
 
     async function run2(merchantUuid, token, transId, item, sequelize, id,sequelize1) {
-        // console.log("ppppppppppppppppppppp", merchantUuid, token, sequelize, id)
+        // console.log("info", merchantUuid, token, sequelize, id)
         var axios = require('axios');
         try {
             let config = {
@@ -244,7 +238,7 @@ async function transformData(data, item) {
 
             let result = await axios(config)
             let data = result.data
-            // console.log("outputtttt",data)
+            // console.log("api2 response",data)
             for(let i=0; i<1; i++){
             let transformer = await transformData(data, item,sequelize1);
             await storeData(transformer[0], id, sequelize1);
