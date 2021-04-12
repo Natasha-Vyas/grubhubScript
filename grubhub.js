@@ -44,7 +44,6 @@ var add = moment().add(7, 'd').format("YYYY-MM-DD");
         let data = result.data
         for (let i = 0; i < data.length; i++){
         let transId = result.data[i].transaction_id
-        
         // console.log(transId)
         run2(merchantUuid, token, transId, data, sequelize, id,sequelize1);
         }
